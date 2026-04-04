@@ -66,13 +66,18 @@ window.addEventListener('load', () => {
   animateValue(expensesCard, 0, financeData.expenses, 1000);
 });
 
-// Add a simple state with example transactions
+// Replace state to include default goals
 const state = {
   transactions: [
     { id: "t1", date: "2026-01-05", description: "Salary", category: "Salary", amount: 1800.00, type: "income" },
     { id: "t2", date: "2026-01-07", description: "Groceries", category: "Food", amount: 120.40, type: "expense" },
     { id: "t3", date: "2026-01-10", description: "Transport pass", category: "Transport", amount: 45.00, type: "expense" },
     { id: "t4", date: "2026-01-12", description: "Internet", category: "Bills", amount: 29.99, type: "expense" }
+  ],
+  goals: [
+    { id: "g1", name: "Emergency fund", target: 3000, current: 600 },
+    { id: "g2", name: "Laptop", target: 2500, current: 900 },
+    { id: "g3", name: "Vacation", target: 1500, current: 150 }
   ]
 };
 
@@ -225,11 +230,68 @@ function setupTransactionsUI(){
   }
 }
 
+// New: render goals and attach add-savings handlers
+function renderGoals(){
+  const wrap = document.querySelector('.goals-list');
+  if (!wrap) return;
+
+  wrap.innerHTML = state.goals.map(g => {
+    const pct = g.target <= 0 ? 0 : Math.min(100, Math.round((g.current / g.target) * 100));
+    const achieved = pct >= 100;
+    return `
+      <div class="goal-item ${achieved ? 'achieved' : ''}" data-id="${g.id}">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+          <div>
+            <strong>${escapeHtml(g.name)}</strong><br/>
+            <span class="goal-badge">${escapeHtml(g.current.toFixed(2))} / ${escapeHtml(g.target.toFixed(2))} BGN</span>
+          </div>
+          <div class="goal-percent">${pct}%</div>
+        </div>
+
+        <div class="progress-bar" aria-hidden="true" style="margin-top:8px;">
+          <div class="progress" style="width:${pct}%;"></div>
+        </div>
+
+        <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+          <button class="btn goal-add" data-id="${g.id}" type="button">Add 50 BGN</button>
+          <span class="goal-status">${achieved ? 'Achieved' : ''}</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  // attach listeners
+  wrap.querySelectorAll('.goal-add').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      const goal = state.goals.find(g => g.id === id);
+      if (!goal) return;
+      goal.current = Math.round((goal.current + 50) * 100) / 100;
+      renderGoals();
+      renderTransactions();
+      updateOverviewCards();
+    });
+  });
+}
+
+// wire global "Add Savings" button to add to first goal (fallback)
+const globalAddSavings = document.getElementById('add-savings');
+if (globalAddSavings){
+  globalAddSavings.addEventListener('click', () => {
+    if (state.goals.length === 0) return;
+    state.goals[0].current = Math.round((state.goals[0].current + 50) * 100) / 100;
+    renderGoals();
+    renderTransactions();
+    updateOverviewCards();
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // existing initialization (hamburger + cta code) has already run earlier in file
   setupTransactionsUI();
   renderTransactions();
   updateOverviewCards();
+  renderGoals(); // <-- added
 });
 const budgets = [
   { category: "Food", limit: 500, spent: 350 },

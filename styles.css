@@ -202,3 +202,29 @@ input, select{
 .budget-item.over .progress {
   background-color: #e74c3c;
 }
+
+.goal-item {
+  margin: 0.5rem 0;
+  padding: 0.75rem;
+  background-color: #ecf0f1;
+  border-radius: 6px;
+  position: relative;
+  color: #2c3e50;
+}
+.goal-item .goal-badge { color: #7f8c8d; font-size:0.9rem; }
+.goal-item .goal-percent { font-weight:700; color:#34495e; }
+
+.goal-item.achieved {
+  border: 2px solid #27ae60;
+  box-shadow: 0 2px 6px rgba(39,174,96,0.08);
+}
+.goal-item .goal-status {
+  color: #27ae60;
+  font-weight:700;
+}
+
+/* reuse existing progress bar styles; ensure visual distinction */
+.goal-item .progress-bar { background:#bdc3c7; height:10px; border-radius:6px; overflow:hidden; }
+.goal-item .progress { height:100%; background:#27ae60; border-radius:6px; }
+
+.goal-item.achieved .progress { background: linear-gradient(90deg,#27ae60,#2ecc71); }
