@@ -1,47 +1,70 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="bg">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FinDash — Financial App Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <header id="header">
-        <div class="logo">FinanceApp</div>
-        <nav class="nav">
-            <ul>
-                <li><a href="#overview">Overview</a></li>
-                <li><a href="#transactions">Transactions</a></li>
-                <li><a href="#budgets">Budgets</a></li>
-                <li><a href="#goals">Goals</a></li>
-                <li><a href="#help">Help</a></li>
-            </ul>
-        </nav>
-        <button class="hamburger" aria-label="Toggle Menu">☰</button>
-    </header>
 
-    <section id="banner">
-        <h1>Track your money. Control your future.</h1>
-        <p class="banner-sub">Overview, transactions, budgets and goals in one place.</p>
-        <button id="add-transaction-btn" class="btn" aria-controls="transactions" aria-label="Add transaction">Add Transaction</button>
-    </section>
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="brand" href="#top">FinDash</a>
 
-    <section id="overview">
-        <h2>Progress Overview</h2>
-        <div class="cards">
-            <div class="card" id="balance-card">Current Balance: --</div>
-            <div class="card" id="income-card">Income (This Month): --</div>
-            <div class="card" id="expenses-card">Expenses (This Month): --</div>
+      <button id="menuBtn" class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false">
+        ☰
+      </button>
+
+      <nav id="nav" class="nav">
+        <a href="#overview">Overview</a>
+        <a href="#transactions">Transactions</a>
+        <a href="#budgets">Budgets</a>
+        <a href="#goals">Goals</a>
+        <a href="#help">Help</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="banner">
+      <div class="container banner-row">
+        <div>
+          <h1>Track your money. Control your future.</h1>
+          <p>Overview, transactions, budgets and goals in one place.</p>
+          <button id="add-transaction-btn" class="btn" type="button">Add Transaction</button>
         </div>
+        <div class="banner-pill">
+          <p class="muted">This is a demo UI. Data is stored locally in your browser.</p>
+        </div>
+      </div>
     </section>
 
-    <section id="transactions">
-        <div class="transactions-header">
-            <h2>Transactions</h2>
-            <div class="tx-actions">
-                <button id="toggleFormBtn" class="btn">Add Transaction</button>
-            </div>
+    <section id="overview" class="section">
+      <div class="container">
+        <h2>Overview</h2>
+        <div class="grid-3">
+          <div class="card">
+            <p class="muted">Current Balance</p>
+            <h3 id="balValue">0</h3>
+          </div>
+          <div class="card">
+            <p class="muted">Income (This Month)</p>
+            <h3 id="incValue">0</h3>
+          </div>
+          <div class="card">
+            <p class="muted">Expenses (This Month)</p>
+            <h3 id="expValue">0</h3>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="transactions" class="section">
+      <div class="container">
+        <div class="row">
+          <h2>Transactions</h2>
+          <button id="toggleFormBtn" class="btn" type="button">Add Transaction</button>
         </div>
 
         <div class="controls">
@@ -90,59 +113,72 @@
             </label>
           </div>
           <p id="formErr" class="err hidden"></p>
-          <div style="margin-top:10px;">
+          <div style="margin-top:10px; display:flex; gap:10px;">
             <button class="btn" type="submit">Save</button>
             <button id="cancelTx" type="button" class="btn">Cancel</button>
           </div>
         </form>
 
         <div class="table-wrap">
-          <table id="transactions-table" class="table">
+          <table class="table">
             <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th class="right">Amount</th>
-                    <th>Type</th>
-                </tr>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th class="right">Amount</th>
+                <th>Type</th>
+              </tr>
             </thead>
-            <tbody id="txBody">
-            </tbody>
+            <tbody id="txBody"></tbody>
           </table>
         </div>
+      </div>
     </section>
 
-    <section id="budgets">
+    <section id="budgets" class="section">
+      <div class="container">
         <h2>Budgets</h2>
-        <div class="budget-list">
-            <div class="budget-item">Food: <span class="spent">0</span>/<span class="limit">0</span></div>
-            <div class="budget-item">Transport: <span class="spent">0</span>/<span class="limit">0</span></div>
-            <div class="budget-item">Bills: <span class="spent">0</span>/<span class="limit">0</span></div>
-            <div class="budget-item">Fun: <span class="spent">0</span>/<span class="limit">0</span></div>
-            <div class="budget-item">Other: <span class="spent">0</span>/<span class="limit">0</span></div>
-        </div>
+        <div id="budgetsWrap" class="stack"></div>
+      </div>
     </section>
 
-    <section id="goals">
+    <section id="goals" class="section">
+      <div class="container">
         <h2>Goals</h2>
-        <div class="goals-list">
-            <div class="goal-item">Goal Name: --, Progress: 0%</div>
+        <div class="goals-list" id="goalsWrap"></div>
+        <div style="margin-top:12px;">
+          <button id="add-savings" class="btn" type="button">Add Savings (50 BGN)</button>
         </div>
-        <button id="add-savings">Add Savings</button>
+      </div>
     </section>
 
-    <footer id="footer" class="site-footer">
-        <div class="container footer-row">
-            <div class="copyright">© 2026 FinanceApp</div>
-            <nav class="footer-links" aria-label="Footer">
-                <a href="#help">Contact</a>
-                <a href="#help">Privacy</a>
-                <a href="#help">Terms</a>
-            </nav>
-        </div>
-    </footer>
+    <section id="alerts" class="section">
+      <div class="container">
+        <h2>Alerts</h2>
+        <div id="alertsWrap" class="stack"></div>
+      </div>
+    </section>
 
-    <script src="script.js"></script>
+    <section id="help" class="section">
+      <div class="container">
+        <h2>Help</h2>
+        <p>Use the UI to add transactions, set budgets and save toward goals. Data is stored in localStorage.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <p>© 2026 FinDash</p>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="#help">Contact</a>
+        <a href="#help">Privacy</a>
+        <a href="#help">Terms</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>

@@ -253,3 +253,43 @@ input, select{
 .alert.low-savings {
   background-color: #2980b9;
 }
+
+/* existing styles above kept; additions below */
+
+.stack{ display:flex; flex-direction:column; gap:10px; }
+
+.budget{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:12px;
+}
+.budget-top{ display:flex; justify-content:space-between; gap:10px; align-items:center; }
+.bar{
+  margin-top:10px;
+  height:10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--border);
+  overflow:hidden;
+}
+.bar > div{ height:100%; width:0%; background:rgba(255,255,255,.22); transition:width .5s ease; }
+.badge{ color:var(--muted); font-size:13px; }
+.budget.warning .badge{ color:#ffd28a; }
+.budget.over .badge{ color:#ff9a9a; }
+
+.goal-item .progress-bar{ height:10px; border-radius:6px; overflow:hidden; background:rgba(0,0,0,0.04); }
+.goal-item .progress{ height:100%; background:linear-gradient(90deg,#27ae60,#2ecc71); transition:width .4s ease; }
+
+.alerts .card{ padding:10px; border-radius:10px; background:var(--panel); border:1px solid var(--border); color:var(--text); }
+
+/* small polish for table and layout */
+.table-wrap .table thead th{ background:rgba(255,255,255,0.02); position:sticky; top:0; z-index:1; }
+.row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+
+@media (max-width: 860px){
+  .banner-row{ flex-direction:column; }
+  .row{ flex-direction:column; align-items:flex-start; gap:8px; }
+  .controls{ flex-direction:column; align-items:stretch; }
+  .footer-row{ flex-direction:column; align-items:flex-start; gap:8px; }
+}
