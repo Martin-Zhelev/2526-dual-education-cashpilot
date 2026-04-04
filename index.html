@@ -1,25 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 <head>
-    <!-- Basic Meta -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="description">
-
-    <title>My Website</title>
-
+    <title>Finance Dashboard</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <header>
-        <h1>Welcome</h1>
+    <header id="header">
+        <div class="logo">FinanceApp</div>
+        <nav class="nav">
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#transactions">Transactions</a></li>
+                <li><a href="#budgets">Budgets</a></li>
+                <li><a href="#goals">Goals</a></li>
+                <li><a href="#help">Help</a></li>
+            </ul>
+        </nav>
+        <button class="hamburger" aria-label="Toggle Menu">☰</button>
     </header>
 
-    <main>
-        <p>Hello, world!</p>
-    </main>
+    <section id="banner">
+        <h1>Track your money. Control your future.</h1>
+        <button id="add-transaction-btn">Add Transaction</button>
+    </section>
 
-    <script src="script.js" defer></script>
+    <section id="overview">
+        <h2>Progress Overview</h2>
+        <div class="cards">
+            <div class="card" id="balance-card">Current Balance: --</div>
+            <div class="card" id="income-card">Income (This Month): --</div>
+            <div class="card" id="expenses-card">Expenses (This Month): --</div>
+        </div>
+    </section>
+
+    <section id="transactions">
+        <h2>Transactions</h2>
+        <table id="transactions-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <button id="add-transaction">Add Transaction</button>
+    </section>
+
+    <section id="budgets">
+        <h2>Budgets</h2>
+        <div class="budget-list">
+            <div class="budget-item">Food: <span class="spent">0</span>/<span class="limit">0</span></div>
+            <div class="budget-item">Transport: <span class="spent">0</span>/<span class="limit">0</span></div>
+            <div class="budget-item">Bills: <span class="spent">0</span>/<span class="limit">0</span></div>
+            <div class="budget-item">Fun: <span class="spent">0</span>/<span class="limit">0</span></div>
+            <div class="budget-item">Other: <span class="spent">0</span>/<span class="limit">0</span></div>
+        </div>
+    </section>
+
+    <section id="goals">
+        <h2>Goals</h2>
+        <div class="goals-list">
+            <div class="goal-item">Goal Name: --, Progress: 0%</div>
+        </div>
+        <button id="add-savings">Add Savings</button>
+    </section>
+
+    <footer id="footer">
+        <p>Contact | Privacy | Terms</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
