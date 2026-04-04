@@ -154,7 +154,7 @@ function renderTransactions(){
   const list = getFilteredSorted();
   body.innerHTML = list.map(t => {
     const sign = t.type === "expense" ? "-" : "+";
-    const amt = `${sign}${t.amount.toFixed(2)} BGN`;
+    const amt = `${sign}${t.amount.toFixed(2)} EUR`;
     return `
       <tr>
         <td>${escapeHtml(t.date)}</td>
@@ -183,9 +183,9 @@ function updateOverviewCards(){
   const expEl = document.getElementById('expenses-card');
   if (!balEl || !incEl || !expEl) return;
   const { income, expenses, balance } = calcSummary();
-  balEl.dataset.suffix = " BGN";
-  incEl.dataset.suffix = " BGN";
-  expEl.dataset.suffix = " BGN";
+  balEl.dataset.suffix = " EUR";
+  incEl.dataset.suffix = " EUR";
+  expEl.dataset.suffix = " EUR";
   animateValue(balEl, parseFloat(balEl.dataset.last || 0), balance, 600);
   animateValue(incEl, parseFloat(incEl.dataset.last || 0), income, 600);
   animateValue(expEl, parseFloat(expEl.dataset.last || 0), expenses, 600);
@@ -272,7 +272,7 @@ function renderGoals(){
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
           <div>
             <strong>${escapeHtml(g.name)}</strong><br/>
-            <span class="goal-badge">${escapeHtml(g.current.toFixed(2))} / ${escapeHtml(g.target.toFixed(2))} BGN</span>
+            <span class="goal-badge">${escapeHtml(g.current.toFixed(2))} / ${escapeHtml(g.target.toFixed(2))} EUR</span>
           </div>
           <div class="goal-percent">${pct}%</div>
         </div>
@@ -282,7 +282,7 @@ function renderGoals(){
         </div>
 
         <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
-          <button class="btn goal-add" data-id="${g.id}" type="button">Add 50 BGN</button>
+          <button class="btn goal-add" data-id="${g.id}" type="button">Add 50 EUR</button>
           <span class="goal-status">${achieved ? 'Achieved' : ''}</span>
         </div>
       </div>
