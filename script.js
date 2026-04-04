@@ -1,14 +1,64 @@
+"use strict";
+
+const STORAGE_KEY = "findash_v1";
+
+function saveState() {
+  try {
+    const payload = {
+      transactions: state.transactions,
+      goals: state.goals
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  } catch (e) {}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const p = JSON.parse(raw);
+    if (p && Array.isArray(p.transactions)) {
+      state.transactions = p.transactions;
+    }
+    if (p && Array.isArray(p.goals)) {
+      state.goals = p.goals;
+    }
+  } catch (e) {}
+}
+
+const qs = (sel, ctx = document) => ctx.querySelector(sel);
+const qsa = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+
 const hamburger = document.querySelector('.hamburger');
 const nav = document.querySelector('.nav');
-hamburger.addEventListener('click', () => {
-  nav.classList.toggle('active');
+
+if (hamburger) {
+  hamburger.addEventListener('click', () => {
+    const active = nav.classList.toggle('active');
+    hamburger.setAttribute('aria-expanded', String(active));
+  });
+}
+
+document.addEventListener('click', (e) => {
+  if (e.target instanceof HTMLAnchorElement && e.target.closest('.nav')) {
+    nav?.classList.remove('active');
+    hamburger?.setAttribute('aria-expanded', 'false');
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (nav?.classList.contains('active')) {
+      nav.classList.remove('active');
+      hamburger?.setAttribute('aria-expanded', 'false');
+    }
+  }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
   const cta = document.getElementById("add-transaction-btn");
   if (cta) {
     cta.addEventListener("click", () => {
-      // If a transaction form exists, show it and focus date
       const txForm = document.getElementById("txForm");
       if (txForm) {
         txForm.classList.remove("hidden");
@@ -16,57 +66,31 @@ document.addEventListener("DOMContentLoaded", () => {
         txForm.scrollIntoView({ behavior: "smooth", block: "center" });
         return;
       }
-
-      // If there's an "Add Transaction" button in the transactions section, trigger it
-      const addBtn = document.getElementById("add-transaction");
+      const addBtn = document.getElementById("toggleFormBtn");
       if (addBtn) {
         addBtn.scrollIntoView({ behavior: "smooth", block: "center" });
         addBtn.focus();
-        // optional: simulate click to open form if button has handler
         addBtn.click();
         return;
       }
-
-      // fallback: scroll to transactions section
       document.getElementById("transactions")?.scrollIntoView({ behavior: "smooth" });
     });
   }
 });
-const financeData = {
-  balance: 2450.30,
-  income: 1800.00,
-  expenses: 950.40
-};
 
-const balanceCard = document.getElementById('balance-card');
-const incomeCard = document.getElementById('income-card');
-const expensesCard = document.getElementById('expenses-card');
-
-function animateValue(element, start, end, duration) {
-  let range = end - start;
-  let current = start;
-  let increment = range / (duration / 16);
-  function step() {
-    current += increment;
-    if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
-      current = end;
-    } else {
-      requestAnimationFrame(step);
-    }
-    element.textContent = element.id.includes('balance') ? `Current Balance: ${current.toFixed(2)}` :
-                          element.id.includes('income') ? `Income (This Month): ${current.toFixed(2)}` :
-                          `Expenses (This Month): ${current.toFixed(2)}`;
+function animateValue(element, start, end, duration = 800) {
+  if (!element) return;
+  const range = end - start;
+  const startTime = performance.now();
+  function frame(now) {
+    const t = Math.min(1, (now - startTime) / duration);
+    const value = start + range * t;
+    element.textContent = value.toFixed(2) + (element.dataset.suffix || "");
+    if (t < 1) requestAnimationFrame(frame);
   }
-  step();
+  requestAnimationFrame(frame);
 }
 
-window.addEventListener('load', () => {
-  animateValue(balanceCard, 0, financeData.balance, 1000);
-  animateValue(incomeCard, 0, financeData.income, 1000);
-  animateValue(expensesCard, 0, financeData.expenses, 1000);
-});
-
-// Replace state to include default goals
 const state = {
   transactions: [
     { id: "t1", date: "2026-01-05", description: "Salary", category: "Salary", amount: 1800.00, type: "income" },
@@ -122,7 +146,6 @@ function renderTransactions(){
   const catFilter = document.getElementById("catFilter");
   if (!body || !catFilter) return;
 
-  // populate categories dropdown
   const current = catFilter.value || "all";
   const cats = uniqueCategories();
   catFilter.innerHTML = `<option value="all">All categories</option>` + cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
@@ -160,9 +183,15 @@ function updateOverviewCards(){
   const expEl = document.getElementById('expenses-card');
   if (!balEl || !incEl || !expEl) return;
   const { income, expenses, balance } = calcSummary();
-  balEl.textContent = `Current Balance: ${balance.toFixed(2)}`;
-  incEl.textContent = `Income (This Month): ${income.toFixed(2)}`;
-  expEl.textContent = `Expenses (This Month): ${expenses.toFixed(2)}`;
+  balEl.dataset.suffix = " BGN";
+  incEl.dataset.suffix = " BGN";
+  expEl.dataset.suffix = " BGN";
+  animateValue(balEl, parseFloat(balEl.dataset.last || 0), balance, 600);
+  animateValue(incEl, parseFloat(incEl.dataset.last || 0), income, 600);
+  animateValue(expEl, parseFloat(expEl.dataset.last || 0), expenses, 600);
+  balEl.dataset.last = balance;
+  incEl.dataset.last = income;
+  expEl.dataset.last = expenses;
 }
 
 function setupTransactionsUI(){
@@ -214,7 +243,7 @@ function setupTransactionsUI(){
       }
 
       state.transactions.push({
-        id: typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `t${Date.now()}`,
+        id: (typeof crypto !== "undefined" && crypto.randomUUID) ? crypto.randomUUID() : `t${Date.now()}`,
         date,
         description: desc,
         category: cat,
@@ -226,11 +255,11 @@ function setupTransactionsUI(){
       form.classList.add("hidden");
       renderTransactions();
       updateOverviewCards();
+      saveState();
     });
   }
 }
 
-// New: render goals and attach add-savings handlers
 function renderGoals(){
   const wrap = document.querySelector('.goals-list');
   if (!wrap) return;
@@ -260,94 +289,35 @@ function renderGoals(){
     `;
   }).join("");
 
-  // attach listeners
-  wrap.querySelectorAll('.goal-add').forEach(btn => {
+  qsa('.goal-add', wrap).forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
       const goal = state.goals.find(g => g.id === id);
       if (!goal) return;
       goal.current = Math.round((goal.current + 50) * 100) / 100;
       renderGoals();
-      renderTransactions();
       updateOverviewCards();
+      saveState();
     });
   });
 }
 
-// wire global "Add Savings" button to add to first goal (fallback)
 const globalAddSavings = document.getElementById('add-savings');
-if (globalAddSavings){
+if (globalAddSavings) {
   globalAddSavings.addEventListener('click', () => {
     if (state.goals.length === 0) return;
     state.goals[0].current = Math.round((state.goals[0].current + 50) * 100) / 100;
     renderGoals();
-    renderTransactions();
     updateOverviewCards();
+    saveState();
   });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // existing initialization (hamburger + cta code) has already run earlier in file
+  loadState();
   setupTransactionsUI();
   renderTransactions();
   updateOverviewCards();
-  renderGoals(); // <-- added
+  renderGoals();
+  saveState();
 });
-const budgets = [
-  { category: "Food", limit: 500, spent: 350 },
-  { category: "Transport", limit: 200, spent: 180 },
-  { category: "Bills", limit: 400, spent: 420 },
-  { category: "Fun", limit: 150, spent: 120 },
-  { category: "Other", limit: 100, spent: 90 }
-];
-
-const budgetList = document.querySelector('.budget-list');
-
-function renderBudgets() {
-  budgetList.innerHTML = '';
-  budgets.forEach(b => {
-    const percent = Math.min((b.spent / b.limit) * 100, 100);
-    let statusClass = '';
-    if (percent > 100) statusClass = 'over';
-    else if (percent > 80) statusClass = 'warning';
-    const item = document.createElement('div');
-    item.className = `budget-item ${statusClass}`;
-    item.innerHTML = `${b.category}: <span class="spent">${b.spent}</span>/<span class="limit">${b.limit}</span>
-      <div class="progress-bar"><div class="progress" style="width: ${percent}%"></div></div>`;
-    budgetList.appendChild(item);
-  });
-}
-
-renderBudgets();
-const alertsContainer = document.createElement('div');
-alertsContainer.className = 'alerts';
-document.body.insertBefore(alertsContainer, document.getElementById('footer'));
-
-function generateAlerts() {
-  alertsContainer.innerHTML = '';
-  budgets.forEach(b => {
-    if (b.spent > b.limit) {
-      const alert = document.createElement('div');
-      alert.className = 'alert over';
-      alert.textContent = `You exceeded your ${b.category} budget.`;
-      alertsContainer.appendChild(alert);
-    } else if ((b.spent / b.limit) > 0.8) {
-      const alert = document.createElement('div');
-      alert.className = 'alert warning';
-      alert.textContent = `${b.category} spending is approaching the limit.`;
-      alertsContainer.appendChild(alert);
-    }
-  });
-
-  const totalIncome = financeData.income;
-  const totalSavings = financeData.balance;
-  const savingsRate = totalSavings / totalIncome;
-  if (savingsRate < 0.2) {
-    const alert = document.createElement('div');
-    alert.className = 'alert low-savings';
-    alert.textContent = `Your savings rate is low (${(savingsRate*100).toFixed(0)}%).`;
-    alertsContainer.appendChild(alert);
-  }
-}
-
-generateAlerts();
