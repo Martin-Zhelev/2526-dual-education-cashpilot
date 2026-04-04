@@ -228,3 +228,28 @@ input, select{
 .goal-item .progress { height:100%; background:#27ae60; border-radius:6px; }
 
 .goal-item.achieved .progress { background: linear-gradient(90deg,#27ae60,#2ecc71); }
+.alerts {
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.alert {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+}
+
+.alert.over {
+  background-color: #e74c3c;
+}
+
+.alert.warning {
+  background-color: #f39c12;
+}
+
+.alert.low-savings {
+  background-color: #2980b9;
+}

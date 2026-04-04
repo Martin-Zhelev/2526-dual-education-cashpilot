@@ -319,3 +319,35 @@ function renderBudgets() {
 }
 
 renderBudgets();
+const alertsContainer = document.createElement('div');
+alertsContainer.className = 'alerts';
+document.body.insertBefore(alertsContainer, document.getElementById('footer'));
+
+function generateAlerts() {
+  alertsContainer.innerHTML = '';
+  budgets.forEach(b => {
+    if (b.spent > b.limit) {
+      const alert = document.createElement('div');
+      alert.className = 'alert over';
+      alert.textContent = `You exceeded your ${b.category} budget.`;
+      alertsContainer.appendChild(alert);
+    } else if ((b.spent / b.limit) > 0.8) {
+      const alert = document.createElement('div');
+      alert.className = 'alert warning';
+      alert.textContent = `${b.category} spending is approaching the limit.`;
+      alertsContainer.appendChild(alert);
+    }
+  });
+
+  const totalIncome = financeData.income;
+  const totalSavings = financeData.balance;
+  const savingsRate = totalSavings / totalIncome;
+  if (savingsRate < 0.2) {
+    const alert = document.createElement('div');
+    alert.className = 'alert low-savings';
+    alert.textContent = `Your savings rate is low (${(savingsRate*100).toFixed(0)}%).`;
+    alertsContainer.appendChild(alert);
+  }
+}
+
+generateAlerts();
