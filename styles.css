@@ -98,3 +98,21 @@ header {
     gap:8px;
   }
 }
+.cards {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.card {
+  flex: 1;
+  min-width: 200px;
+  background-color: #ecf0f1;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
