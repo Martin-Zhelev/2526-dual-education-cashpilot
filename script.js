@@ -1,3 +1,9 @@
+const hamburger = document.querySelector('.hamburger');
+const nav = document.querySelector('.nav');
+hamburger.addEventListener('click', () => {
+  nav.classList.toggle('active');
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const cta = document.getElementById("add-transaction-btn");
   if (cta) {
