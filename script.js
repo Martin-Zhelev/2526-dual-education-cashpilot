@@ -6,7 +6,8 @@ function saveState() {
   try {
     const payload = {
       transactions: state.transactions,
-      goals: state.goals
+      goals: state.goals,
+      budgets: state.budgets
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   } catch (e) {}
@@ -22,6 +23,9 @@ function loadState() {
     }
     if (p && Array.isArray(p.goals)) {
       state.goals = p.goals;
+    }
+    if (p && p.budgets && typeof p.budgets === 'object') {
+      state.budgets = p.budgets;
     }
   } catch (e) {}
 }
@@ -56,26 +60,31 @@ document.addEventListener('keydown', (e) => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  const cta = document.getElementById("add-transaction-btn");
-  if (cta) {
-    cta.addEventListener("click", () => {
-      const txForm = document.getElementById("txForm");
-      if (txForm) {
-        txForm.classList.remove("hidden");
-        document.getElementById("txDate")?.focus();
-        txForm.scrollIntoView({ behavior: "smooth", block: "center" });
-        return;
+  loadState();
+
+  // nav buttons: smooth scroll to target and close mobile nav
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-target');
+      if (target) {
+        const el = document.querySelector(target);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-      const addBtn = document.getElementById("toggleFormBtn");
-      if (addBtn) {
-        addBtn.scrollIntoView({ behavior: "smooth", block: "center" });
-        addBtn.focus();
-        addBtn.click();
-        return;
+      const navEl = document.getElementById('nav');
+      if (navEl?.classList.contains('open')) {
+        navEl.classList.remove('open');
+        document.getElementById('menuBtn')?.setAttribute('aria-expanded', 'false');
       }
-      document.getElementById("transactions")?.scrollIntoView({ behavior: "smooth" });
     });
-  }
+  });
+
+  setupTransactionsUI();
+  renderTransactions();
+  updateOverviewCards();
+  renderGoals();
+  renderBudgets();
+  renderAlerts();
+  saveState();
 });
 
 function animateValue(element, start, end, duration = 800) {
@@ -102,7 +111,14 @@ const state = {
     { id: "g1", name: "Emergency fund", target: 3000, current: 600 },
     { id: "g2", name: "Laptop", target: 2500, current: 900 },
     { id: "g3", name: "Vacation", target: 1500, current: 150 }
-  ]
+  ],
+  budgets: {
+    Food: 600,
+    Transport: 200,
+    Bills: 180,
+    Fun: 150,
+    Other: 120
+  }
 };
 
 function escapeHtml(s){
@@ -194,6 +210,76 @@ function updateOverviewCards(){
   expEl.dataset.last = expenses;
 }
 
+function spentByCategory(){
+  const map = new Map();
+  for (const t of state.transactions){
+    if (t.type !== "expense") continue;
+    map.set(t.category, (map.get(t.category) || 0) + t.amount);
+  }
+  return map;
+}
+
+function renderBudgets(){
+  const wrap = document.getElementById("budgetsWrap");
+  if (!wrap) return;
+
+  const spent = spentByCategory();
+  const entries = Object.entries(state.budgets);
+
+  wrap.innerHTML = entries.map(([cat, limit]) => {
+    const used = spent.get(cat) || 0;
+    const pct = limit <= 0 ? 0 : Math.min(200, (used / limit) * 100);
+    const cls = used > limit ? "over" : (used / limit >= 0.8 ? "warning" : "");
+    return `
+      <div class="budget ${cls}">
+        <div class="budget-top">
+          <div>
+            <strong>${escapeHtml(cat)}</strong><br/>
+            <span class="badge">${fmtCurrency(used)} / ${fmtCurrency(limit)}</span>
+          </div>
+          <div class="badge">${Math.round(limit>0? (used/limit)*100:0)}%</div>
+        </div>
+        <div class="bar"><div style="width:${pct}%"></div></div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderAlerts(){
+  const wrap = document.getElementById("alertsWrap");
+  if (!wrap) return;
+
+  const msgs = [];
+  const { income, expenses } = calcSummary();
+
+  const spent = spentByCategory();
+  for (const [cat, limit] of Object.entries(state.budgets)){
+    const used = spent.get(cat) || 0;
+    if (limit > 0 && used > limit){
+      msgs.push(`Превишихте бюджета за ${cat} с ${fmtCurrency(used - limit)}.`);
+    } else if (limit > 0 && used / limit >= 0.8){
+      msgs.push(`Близо сте до бюджета за ${cat} (${Math.round((used/limit)*100)}%).`);
+    }
+  }
+
+  if (income > 0){
+    const savings = income - expenses;
+    const rate = savings / income;
+    if (rate < 0.10) msgs.push(`Нисък процент спестяване (${Math.round(rate*100)}%).`);
+    else if (rate >= 0.20) msgs.push(`Отлично — процент спестяване ${Math.round(rate*100)}%.`);
+  } else {
+    msgs.push("Няма записан доход този месец.");
+  }
+
+  if (state.transactions.length < 5){
+    msgs.push("Добавете още транзакции, за да получите по-точни съвети.");
+  }
+
+  wrap.innerHTML = (msgs.length ? msgs : ["Няма известия."]).map(m => `
+    <div class="card"><p>${escapeHtml(m)}</p></div>
+  `).join("");
+}
+
 function setupTransactionsUI(){
   const toggleBtn = document.getElementById("toggleFormBtn");
   const form = document.getElementById("txForm");
@@ -255,6 +341,8 @@ function setupTransactionsUI(){
       form.classList.add("hidden");
       renderTransactions();
       updateOverviewCards();
+      renderBudgets();
+      renderAlerts();
       saveState();
     });
   }
@@ -282,21 +370,25 @@ function renderGoals(){
         </div>
 
         <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
-          <button class="btn goal-add" data-id="${g.id}" type="button">Add 50 EUR</button>
-          <span class="goal-status">${achieved ? 'Achieved' : ''}</span>
+          ${achieved ? '<span class="goal-status">Achieved</span>' : `<button class="btn goal-add" data-id="${g.id}" type="button">Add 50 EUR</button>`}
         </div>
       </div>
     `;
   }).join("");
 
+  // attach listeners only for active (not achieved) buttons
   qsa('.goal-add', wrap).forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
       const goal = state.goals.find(g => g.id === id);
       if (!goal) return;
-      goal.current = Math.round((goal.current + 50) * 100) / 100;
+      // cap addition so we don't exceed target
+      const add = 50;
+      goal.current = Math.min(goal.target, Math.round((goal.current + add) * 100) / 100);
       renderGoals();
       updateOverviewCards();
+      renderBudgets();
+      renderAlerts();
       saveState();
     });
   });
@@ -306,18 +398,13 @@ const globalAddSavings = document.getElementById('add-savings');
 if (globalAddSavings) {
   globalAddSavings.addEventListener('click', () => {
     if (state.goals.length === 0) return;
-    state.goals[0].current = Math.round((state.goals[0].current + 50) * 100) / 100;
+    const goal = state.goals[0];
+    if (!goal) return;
+    goal.current = Math.min(goal.target, Math.round((goal.current + 50) * 100) / 100);
     renderGoals();
     updateOverviewCards();
+    renderBudgets();
+    renderAlerts();
     saveState();
   });
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  loadState();
-  setupTransactionsUI();
-  renderTransactions();
-  updateOverviewCards();
-  renderGoals();
-  saveState();
-});

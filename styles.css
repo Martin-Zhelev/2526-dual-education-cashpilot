@@ -29,6 +29,19 @@ header {
   cursor: pointer;
 }
 
+.nav-item { display:inline-flex; }
+.nav-btn{
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 8px 10px;
+  border-radius:8px;
+  cursor: pointer;
+  font-weight:600;
+}
+.nav-btn.small{ padding:6px 8px; font-size:0.95rem; }
+.nav-btn:hover{ background: rgba(255,255,255,0.03); }
+
 @media (max-width: 768px) {
   .nav {
     position: absolute;
@@ -56,6 +69,12 @@ header {
   .nav li {
     padding: 0.5rem 1rem;
   }
+}
+
+@media (max-width: 860px){
+  .nav{ display:flex; gap:8px; flex-wrap:wrap; }
+  .nav-item{ width:100%; }
+  .nav-btn{ width:100%; text-align:left; }
 }
 
 .site-footer{
