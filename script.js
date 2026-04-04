@@ -231,3 +231,29 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTransactions();
   updateOverviewCards();
 });
+const budgets = [
+  { category: "Food", limit: 500, spent: 350 },
+  { category: "Transport", limit: 200, spent: 180 },
+  { category: "Bills", limit: 400, spent: 420 },
+  { category: "Fun", limit: 150, spent: 120 },
+  { category: "Other", limit: 100, spent: 90 }
+];
+
+const budgetList = document.querySelector('.budget-list');
+
+function renderBudgets() {
+  budgetList.innerHTML = '';
+  budgets.forEach(b => {
+    const percent = Math.min((b.spent / b.limit) * 100, 100);
+    let statusClass = '';
+    if (percent > 100) statusClass = 'over';
+    else if (percent > 80) statusClass = 'warning';
+    const item = document.createElement('div');
+    item.className = `budget-item ${statusClass}`;
+    item.innerHTML = `${b.category}: <span class="spent">${b.spent}</span>/<span class="limit">${b.limit}</span>
+      <div class="progress-bar"><div class="progress" style="width: ${percent}%"></div></div>`;
+    budgetList.appendChild(item);
+  });
+}
+
+renderBudgets();
