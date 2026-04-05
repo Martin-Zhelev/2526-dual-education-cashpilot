@@ -30,29 +30,14 @@ function loadState() {
   } catch (e) {}
 }
 
-const qs = (sel, ctx = document) => ctx.querySelector(sel);
-const qsa = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
-
 document.addEventListener("DOMContentLoaded", () => {
   loadState();
 
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.getAttribute('data-target');
-      if (target) {
-        const el = document.querySelector(target);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  });
+  setupNavigation();
+  syncAuthUI();
 
   setupTransactionsUI();
-  renderTransactions();
-  updateOverviewCards();
-  renderGoals();
-  renderBudgets();
-  renderAlerts();
-  saveState();
+  renderApp();
 });
 
 function animateValue(element, start, end, duration = 800) {
@@ -100,6 +85,29 @@ const DEFAULT_GOALS = [
   { id: "g1", name: "Emergency fund", target: 3000, current: 600 },
   { id: "g2", name: "Laptop", target: 2500, current: 900 }
 ];
+
+function renderApp() {
+  renderTransactions();
+  updateOverviewCards();
+  renderGoals();
+  renderBudgets();
+  renderAlerts();
+  saveState();
+}
+
+function setupNavigation() {
+  document.querySelectorAll(".nav-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      const target = button.getAttribute("data-target");
+      if (!target) return;
+
+      const section = document.querySelector(target);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
+}
 
 function escapeHtml(s){
   return String(s)
@@ -332,17 +340,13 @@ function setupTransactionsUI(){
 
       form.reset();
       form.classList.add("hidden");
-      renderTransactions();
-      updateOverviewCards();
-      renderBudgets();
-      renderAlerts();
-      saveState();
+      renderApp();
     });
   }
 }
 
 function renderGoals(){
-  const wrap = document.querySelector('.goals-list');
+  const wrap = document.getElementById("goalsWrap");
   if (!wrap) return;
 
   wrap.innerHTML = state.goals.map(g => {
@@ -368,38 +372,18 @@ function renderGoals(){
   }).join("");
 
   // attach listeners only for active (not achieved) buttons
-  qsa('.goal-add', wrap).forEach(btn => {
+  wrap.querySelectorAll(".goal-add").forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
       const goal = state.goals.find(g => g.id === id);
       if (!goal) return;
-      // cap addition so we don't exceed target
       const add = 50;
       goal.current = Math.min(goal.target, Math.round((goal.current + add) * 100) / 100);
-      renderGoals();
-      updateOverviewCards();
-      renderBudgets();
-      renderAlerts();
-      saveState();
+      renderApp();
     });
   });
 }
 
-// ensure add-savings exists and uses the updated state
-const globalAddSavings = document.getElementById('add-savings');
-if (globalAddSavings) {
-  globalAddSavings.addEventListener('click', () => {
-    if (state.goals.length === 0) return;
-    const goal = state.goals[0];
-    if (!goal) return;
-    goal.current = Math.min(goal.target, Math.round((goal.current + 50) * 100) / 100);
-    renderGoals();
-    updateOverviewCards();
-    renderBudgets();
-    renderAlerts();
-    saveState();
-  });
-}
 const loginScreen = document.getElementById('login-screen');
 const loginBtn = document.getElementById('login-btn');
 const logoutBtn = document.getElementById('logout');
