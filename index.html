@@ -61,7 +61,7 @@
         <div class="grid-3">
           <div class="card">
             <p class="muted">Current Balance</p>
-            <h3 id="balValue">0</h3>
+            <h3 id="balValue">1000000</h3>
           </div>
           <div class="card">
             <p class="muted">Income (This Month)</p>
@@ -154,7 +154,9 @@
     <section id="budgets" class="section">
       <div class="container">
         <h2>Budgets</h2>
-        <div id="budgetsWrap" class="stack"></div>
+
+        <div class="stack" id="budgetsWrap">
+        </div>
       </div>
     </section>
 
@@ -163,8 +165,14 @@
         <h2>Goals</h2>
         <div class="goals-list" id="goalsWrap"></div>
         <div style="margin-top:12px;">
-
         </div>
+      </div>
+    </section>
+
+    <section id="alerts" class="section">
+      <div class="container">
+        <h2>Alerts</h2>
+        <div id="alertsWrap" class="stack"></div>
       </div>
     </section>
 
@@ -175,79 +183,7 @@
       </div>
     </section>
   </main>
-<section class="budgets">
 
-    <h2 class="section-title">Budgets</h2>
-    <div class="budget-card">
-        <div class="budget-header">
-            <span class="budget-title">Food</span>
-            <span class="budget-values">250 / 300 EUR</span>
-        </div>
-
-        <div class="progress-bar">
-            <div class="progress-fill progress-warning" style="width: 83%;"></div>
-        </div>
-
-        <div class="budget-footer">
-            <span class="budget-percent">83%</span>
-        </div>
-    </div>
-
-    <div class="budget-card">
-        <div class="budget-header">
-            <span class="budget-title">Transport</span>
-            <span class="budget-values">120 / 200 EUR</span>
-        </div>
-
-        <div class="progress-bar">
-            <div class="progress-fill progress-ok" style="width: 60%;"></div>
-        </div>
-
-        <div class="budget-footer">
-            <span class="budget-percent">60%</span>
-        </div>
-    </div>
-
-    <div class="budget-card">
-        <div class="budget-header">
-            <span class="budget-title">Entertainment</span>
-            <span class="budget-values">180 / 150 EUR</span>
-        </div>
-
-        <div class="progress-bar">
-            <div class="progress-fill progress-over" style="width: 120%;"></div>
-        </div>
-
-        <div class="budget-footer">
-            <span class="budget-percent">120%</span>
-        </div>
-    </div>
-
-</section>
-<section class="alerts">
-
-    <h2 class="section-title">Insights</h2>
-
-    <div class="alerts-container">
-
-        <div class="alert alert-danger">
-            <span class="alert-icon">⚠️</span>
-            <span class="alert-text">You exceeded your Entertainment budget</span>
-        </div>
-
-        <div class="alert alert-warning">
-            <span class="alert-icon">📉</span>
-            <span class="alert-text">Your savings rate is below 20%</span>
-        </div>
-
-        <div class="alert alert-success">
-            <span class="alert-icon">✅</span>
-            <span class="alert-text">Good job staying within Transport budget</span>
-        </div>
-
-    </div>
-
-</section>
   <footer class="site-footer">
     <div class="container footer-row">
       <p>© 2026 Cashpilot</p>

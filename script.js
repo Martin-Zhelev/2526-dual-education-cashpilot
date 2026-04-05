@@ -60,6 +60,13 @@ document.addEventListener('keydown', (e) => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Reset budgets and goals to defaults on each load (clear storage effect)
+  state.budgets = Object.assign({}, DEFAULT_BUDGETS);
+  state.goals = JSON.parse(JSON.stringify(DEFAULT_GOALS));
+
+  // persist initial state (reset)
+  saveState();
+
   loadState();
 
   // nav buttons: smooth scroll to target and close mobile nav
@@ -109,8 +116,7 @@ const state = {
   ],
   goals: [
     { id: "g1", name: "Emergency fund", target: 3000, current: 600 },
-    { id: "g2", name: "Laptop", target: 2500, current: 900 },
-    { id: "g3", name: "Vacation", target: 1500, current: 150 }
+    { id: "g2", name: "Laptop", target: 2500, current: 900 }
   ],
   budgets: {
     Food: 600,
@@ -120,6 +126,19 @@ const state = {
     Other: 120
   }
 };
+
+const DEFAULT_BUDGETS = {
+  Food: 600,
+  Transport: 200,
+  Bills: 180,
+  Fun: 150,
+  Other: 120
+};
+
+const DEFAULT_GOALS = [
+  { id: "g1", name: "Emergency fund", target: 3000, current: 600 },
+  { id: "g2", name: "Laptop", target: 2500, current: 900 }
+];
 
 function escapeHtml(s){
   return String(s)
@@ -256,28 +275,40 @@ function renderAlerts(){
   for (const [cat, limit] of Object.entries(state.budgets)){
     const used = spent.get(cat) || 0;
     if (limit > 0 && used > limit){
-      msgs.push(`Превишихте бюджета за ${cat} с ${fmtCurrency(used - limit)}.`);
+      msgs.push({ type: 'danger', text: `Превишихте бюджета за ${cat} с ${fmtCurrency(used - limit)}.` });
     } else if (limit > 0 && used / limit >= 0.8){
-      msgs.push(`Близо сте до бюджета за ${cat} (${Math.round((used/limit)*100)}%).`);
+      msgs.push({ type: 'warning', text: `Близо сте до бюджета за ${cat} (${Math.round((used/limit)*100)}%).` });
+    } else {
+      // ok state optional
+      msgs.push({ type: 'ok', text: `В нормата: ${cat} (${Math.round((used/limit||0)*100)}%).` });
     }
   }
 
   if (income > 0){
     const savings = income - expenses;
     const rate = savings / income;
-    if (rate < 0.10) msgs.push(`Нисък процент спестяване (${Math.round(rate*100)}%).`);
-    else if (rate >= 0.20) msgs.push(`Отлично — процент спестяване ${Math.round(rate*100)}%.`);
+    if (rate < 0.10) msgs.push({ type: 'warning', text: `Нисък процент спестяване (${Math.round(rate*100)}%).` });
+    else if (rate >= 0.20) msgs.push({ type: 'ok', text: `Отлично — процент спестяване ${Math.round(rate*100)}%.` });
   } else {
-    msgs.push("Няма записан доход този месец.");
+    msgs.push({ type: 'warning', text: "Няма записан доход този месец." });
   }
 
-  if (state.transactions.length < 5){
-    msgs.push("Добавете още транзакции, за да получите по-точни съвети.");
-  }
 
-  wrap.innerHTML = (msgs.length ? msgs : ["Няма известия."]).map(m => `
-    <div class="card"><p>${escapeHtml(m)}</p></div>
-  `).join("");
+
+  // reduce messages to unique by text
+  const seen = new Set();
+  const filtered = msgs.filter(m => { if (seen.has(m.text)) return false; seen.add(m.text); return true; });
+
+  wrap.innerHTML = filtered.map(m => {
+    const cls = m.type === 'danger' ? 'alert-danger' : (m.type === 'warning' ? 'alert-warning' : (m.type === 'ok' ? 'alert-success' : 'alert-info'));
+    const icon = m.type === 'danger' ? '⚠️' : (m.type === 'warning' ? '📉' : (m.type === 'ok' ? '✅' : '💡'));
+    return `
+      <div class="alert ${cls}">
+        <span class="alert-icon">${icon}</span>
+        <span class="alert-text">${escapeHtml(m.text)}</span>
+      </div>
+    `;
+  }).join('');
 }
 
 function setupTransactionsUI(){
@@ -394,6 +425,7 @@ function renderGoals(){
   });
 }
 
+// ensure add-savings exists and uses the updated state
 const globalAddSavings = document.getElementById('add-savings');
 if (globalAddSavings) {
   globalAddSavings.addEventListener('click', () => {
@@ -439,4 +471,28 @@ loginBtn.addEventListener('click', () => {
 logoutBtn.addEventListener('click', () => {
   localStorage.removeItem('loggedIn');
   location.reload();
+});
+
+function fmtCurrency(x){
+  try{
+    return new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR' }).format(Number(x));
+  }catch{ return String(x); }
+}
+
+// small demo data for initial hero animation
+const financeData = {
+  balance: 2450.30,
+  income: 1800.00,
+  expenses: 950.40
+};
+
+window.addEventListener('load', () => {
+  const balEl = document.getElementById('balValue');
+  const incEl = document.getElementById('incValue');
+  const expEl = document.getElementById('expValue');
+  if (balEl && incEl && expEl && typeof animateValue === 'function'){
+    animateValue(balEl, 0, financeData.balance, 1000);
+    animateValue(incEl, 0, financeData.income, 1000);
+    animateValue(expEl, 0, financeData.expenses, 1000);
+  }
 });

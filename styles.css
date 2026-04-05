@@ -278,40 +278,62 @@ input, select{
 .stack{ display:flex; flex-direction:column; gap:10px; }
 
 .budget{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:12px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 8px 20px rgba(2,6,23,0.06);
+  display:block;
 }
-.budget-top{ display:flex; justify-content:space-between; gap:10px; align-items:center; }
-.bar{
-  margin-top:10px;
-  height:10px;
-  border-radius:999px;
-  background:rgba(255,255,255,.06);
-  border:1px solid var(--border);
-  overflow:hidden;
+.budget-top{ display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.budget-top strong{ font-size:16px; color:#0b1720; }
+.badge{ color:#6b7280; font-size:13px; }
+.budget .badge{ color:#6b7280; }
+
+.bar{ margin-top:12px; height:12px; border-radius:999px; background:#eef2f6; overflow:hidden; border:1px solid rgba(0,0,0,0.04); }
+.bar > div{ height:100%; width:0%; transition:width .6s ease; background: linear-gradient(90deg,#22c55e,#16a34a); }
+
+/* state variants */
+.budget.warning .bar > div{ background: linear-gradient(90deg,#f59e0b,#f97316); }
+.budget.over .bar > div{ background: linear-gradient(90deg,#ef4444,#dc2626); }
+
+.budget .percent{ font-weight:700; color:#374151; }
+
+/* ensure badges and text are readable on small screens */
+@media (max-width:860px){
+  .budget{ padding:12px; }
+  .bar{ height:10px; }
 }
-.bar > div{ height:100%; width:0%; background:rgba(255,255,255,.22); transition:width .5s ease; }
-.badge{ color:var(--muted); font-size:13px; }
-.budget.warning .badge{ color:#ffd28a; }
-.budget.over .badge{ color:#ff9a9a; }
 
-.goal-item .progress-bar{ height:10px; border-radius:6px; overflow:hidden; background:rgba(0,0,0,0.04); }
-.goal-item .progress{ height:100%; background:linear-gradient(90deg,#27ae60,#2ecc71); transition:width .4s ease; }
-
-.alerts .card{ padding:10px; border-radius:10px; background:var(--panel); border:1px solid var(--border); color:var(--text); }
-
-/* small polish for table and layout */
-.table-wrap .table thead th{ background:rgba(255,255,255,0.02); position:sticky; top:0; z-index:1; }
-.row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
-
-@media (max-width: 860px){
-  .banner-row{ flex-direction:column; }
-  .row{ flex-direction:column; align-items:flex-start; gap:8px; }
-  .controls{ flex-direction:column; align-items:stretch; }
-  .footer-row{ flex-direction:column; align-items:flex-start; gap:8px; }
+/* Polish for budget cards to match old layout */
+.stack { display:flex; flex-direction:column; gap:12px; margin-top:8px; }
+.budget{
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 8px 20px rgba(2,6,23,0.06);
+  display:block;
 }
+.budget-top{ display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.budget-top strong{ font-size:16px; color:#0b1720; }
+.badge{ color:#6b7280; font-size:13px; }
+.budget .badge{ color:#6b7280; }
+
+.bar{ margin-top:12px; height:12px; border-radius:999px; background:#eef2f6; overflow:hidden; border:1px solid rgba(0,0,0,0.04); }
+.bar > div{ height:100%; width:0%; transition:width .6s ease; background: linear-gradient(90deg,#22c55e,#16a34a); }
+
+/* state variants */
+.budget.warning .bar > div{ background: linear-gradient(90deg,#f59e0b,#f97316); }
+.budget.over .bar > div{ background: linear-gradient(90deg,#ef4444,#dc2626); }
+
+.budget .percent{ font-weight:700; color:#374151; }
+
+/* ensure badges and text are readable on small screens */
+@media (max-width:860px){
+  .budget{ padding:12px; }
+  .bar{ height:10px; }
+}
+
+/* ...existing code... */
 .btn {
     background: linear-gradient(135deg, #4CAF50, #43A047);
     color: #fff;
