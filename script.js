@@ -33,54 +33,15 @@ function loadState() {
 const qs = (sel, ctx = document) => ctx.querySelector(sel);
 const qsa = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
-const hamburger = document.querySelector('.hamburger');
-const nav = document.querySelector('.nav');
-
-if (hamburger) {
-  hamburger.addEventListener('click', () => {
-    const active = nav.classList.toggle('active');
-    hamburger.setAttribute('aria-expanded', String(active));
-  });
-}
-
-document.addEventListener('click', (e) => {
-  if (e.target instanceof HTMLAnchorElement && e.target.closest('.nav')) {
-    nav?.classList.remove('active');
-    hamburger?.setAttribute('aria-expanded', 'false');
-  }
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    if (nav?.classList.contains('active')) {
-      nav.classList.remove('active');
-      hamburger?.setAttribute('aria-expanded', 'false');
-    }
-  }
-});
-
 document.addEventListener("DOMContentLoaded", () => {
-  // Reset budgets and goals to defaults on each load (clear storage effect)
-  state.budgets = Object.assign({}, DEFAULT_BUDGETS);
-  state.goals = JSON.parse(JSON.stringify(DEFAULT_GOALS));
-
-  // persist initial state (reset)
-  saveState();
-
   loadState();
 
-  // nav buttons: smooth scroll to target and close mobile nav
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = btn.getAttribute('data-target');
       if (target) {
         const el = document.querySelector(target);
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-      const navEl = document.getElementById('nav');
-      if (navEl?.classList.contains('open')) {
-        navEl.classList.remove('open');
-        document.getElementById('menuBtn')?.setAttribute('aria-expanded', 'false');
       }
     });
   });
@@ -190,13 +151,14 @@ function renderTransactions(){
   body.innerHTML = list.map(t => {
     const sign = t.type === "expense" ? "-" : "+";
     const amt = `${sign}${t.amount.toFixed(2)} EUR`;
+    const typeClass = t.type === "expense" ? "pill pill-expense" : "pill pill-income";
     return `
       <tr>
         <td>${escapeHtml(t.date)}</td>
         <td>${escapeHtml(t.description)}</td>
         <td>${escapeHtml(t.category)}</td>
         <td class="right">${escapeHtml(amt)}</td>
-        <td>${escapeHtml(t.type)}</td>
+        <td><span class="${typeClass}">${escapeHtml(t.type)}</span></td>
       </tr>
     `;
   }).join("");
@@ -213,9 +175,9 @@ function calcSummary(){
 }
 
 function updateOverviewCards(){
-  const balEl = document.getElementById('balance-card');
-  const incEl = document.getElementById('income-card');
-  const expEl = document.getElementById('expenses-card');
+  const balEl = document.getElementById('balValue');
+  const incEl = document.getElementById('incValue');
+  const expEl = document.getElementById('expValue');
   if (!balEl || !incEl || !expEl) return;
   const { income, expenses, balance } = calcSummary();
   balEl.dataset.suffix = " EUR";
@@ -251,14 +213,14 @@ function renderBudgets(){
     const cls = used > limit ? "over" : (used / limit >= 0.8 ? "warning" : "");
     return `
       <div class="budget ${cls}">
-        <div class="budget-top">
-          <div>
-            <strong>${escapeHtml(cat)}</strong><br/>
+        <div class="budget-header">
+          <div class="budget-copy">
+            <span class="budget-label">${escapeHtml(cat)}</span>
             <span class="badge">${fmtCurrency(used)} / ${fmtCurrency(limit)}</span>
           </div>
-          <div class="badge">${Math.round(limit>0? (used/limit)*100:0)}%</div>
+          <div class="budget-percent">${Math.round(limit > 0 ? (used / limit) * 100 : 0)}%</div>
         </div>
-        <div class="bar"><div style="width:${pct}%"></div></div>
+        <progress class="meter" max="200" value="${pct}">${pct}</progress>
       </div>
     `;
   }).join("");
@@ -388,20 +350,18 @@ function renderGoals(){
     const achieved = pct >= 100;
     return `
       <div class="goal-item ${achieved ? 'achieved' : ''}" data-id="${g.id}">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
-          <div>
-            <strong>${escapeHtml(g.name)}</strong><br/>
-            <span class="goal-badge">${escapeHtml(g.current.toFixed(2))} / ${escapeHtml(g.target.toFixed(2))} EUR</span>
+        <div class="goal-header">
+          <div class="goal-copy">
+            <span class="goal-name">${escapeHtml(g.name)}</span>
+            <span class="goal-target">${escapeHtml(g.current.toFixed(2))} / ${escapeHtml(g.target.toFixed(2))} EUR</span>
           </div>
           <div class="goal-percent">${pct}%</div>
         </div>
 
-        <div class="progress-bar" aria-hidden="true" style="margin-top:8px;">
-          <div class="progress" style="width:${pct}%;"></div>
-        </div>
+        <progress class="meter" max="100" value="${pct}">${pct}</progress>
 
-        <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
-          ${achieved ? '<span class="goal-status">Achieved</span>' : `<button class="btn goal-add" data-id="${g.id}" type="button">Add 50 EUR</button>`}
+        <div class="goal-actions">
+          ${achieved ? '<span class="goal-status">Achieved</span>' : `<button class="btn btn-secondary goal-add" data-id="${g.id}" type="button">Add 50 EUR</button>`}
         </div>
       </div>
     `;
@@ -444,13 +404,16 @@ const loginScreen = document.getElementById('login-screen');
 const loginBtn = document.getElementById('login-btn');
 const logoutBtn = document.getElementById('logout');
 
-if (!localStorage.getItem('loggedIn')) {
-  loginScreen.style.display = 'flex';
-} else {
-  loginScreen.style.display = 'none';
+function syncAuthUI() {
+  if (!loginScreen) return;
+  const loggedIn = localStorage.getItem('loggedIn') === 'true';
+  loginScreen.classList.toggle('hidden', loggedIn);
+  loginScreen.setAttribute('aria-hidden', String(loggedIn));
 }
 
-loginBtn.addEventListener('click', () => {
+syncAuthUI();
+
+loginBtn?.addEventListener('click', () => {
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value.trim();
   const email = document.getElementById('email').value.trim();
@@ -465,12 +428,12 @@ loginBtn.addEventListener('click', () => {
   }
 
   localStorage.setItem('loggedIn', 'true');
-  loginScreen.style.display = 'none';
+  syncAuthUI();
 });
 
-logoutBtn.addEventListener('click', () => {
+logoutBtn?.addEventListener('click', () => {
   localStorage.removeItem('loggedIn');
-  location.reload();
+  syncAuthUI();
 });
 
 function fmtCurrency(x){
@@ -478,21 +441,3 @@ function fmtCurrency(x){
     return new Intl.NumberFormat('en-IE', { style: 'currency', currency: 'EUR' }).format(Number(x));
   }catch{ return String(x); }
 }
-
-// small demo data for initial hero animation
-const financeData = {
-  balance: 2450.30,
-  income: 1800.00,
-  expenses: 950.40
-};
-
-window.addEventListener('load', () => {
-  const balEl = document.getElementById('balValue');
-  const incEl = document.getElementById('incValue');
-  const expEl = document.getElementById('expValue');
-  if (balEl && incEl && expEl && typeof animateValue === 'function'){
-    animateValue(balEl, 0, financeData.balance, 1000);
-    animateValue(incEl, 0, financeData.income, 1000);
-    animateValue(expEl, 0, financeData.expenses, 1000);
-  }
-});

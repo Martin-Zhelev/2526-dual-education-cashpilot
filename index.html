@@ -3,197 +3,261 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cashpilot — Financial App Dashboard</title>
+  <title>Cashpilot | Financial Control Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div id="login-screen" class="login-screen" aria-hidden="true">
+    <div class="login-box">
+      <p class="eyebrow">Secure access</p>
+      <h2>Sign in to Cashpilot</h2>
+      <p class="login-copy">Monitor cash flow, spending, and savings goals from one polished workspace.</p>
+      <div class="login-form">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Username" autocomplete="username" />
 
-<div id="login-screen">
-  <div class="login-box">
-    <h2>Sign In</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <input type="email" id="email" placeholder="Email">
-    <button id="login-btn">Enter</button>
-  </div>
-</div>
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Password" autocomplete="current-password" />
 
-<header>
-  <button id="logout">Logout</button>
-  <h1>Cashpilot</h1>
-  <p>Master your money today, build your freedom tomorrow.</p>
-  <nav class="nav">
-    <a href="#overview">Overview</a>
-    <a href="#budgets">Budgets</a>
-  </nav>
-</header>
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="name@example.com" autocomplete="email" />
 
-  <header class="site-header">
-    <div class="container header-row">
-
-      <nav id="nav" class="nav">
-        <div class="nav-item"><button class="nav-btn" data-target="#overview">Overview</button></div>
-        <div class="nav-item"><button class="nav-btn" data-target="#transactions">Transactions</button></div>
-        <div class="nav-item"><button class="nav-btn" data-target="#budgets">Budgets</button></div>
-        <div class="nav-item"><button class="nav-btn" data-target="#goals">Goals</button></div>
-        <div class="nav-item"><button class="nav-btn" data-target="#help">Help</button></div>
-      </nav>
+        <button id="login-btn" class="btn btn-primary" type="button">Enter dashboard</button>
+      </div>
     </div>
-  </header>
-</header>
+  </div>
 
-  <main id="top">
-    <section class="banner">
-      <div class="container banner-row">
-        <div>
-          <h1>Track your money. Control your future.</h1>
-          <p>Обзор, транзакции, бюджети и цели на едно място.</p>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="container header-row">
+        <div class="brand-block">
+          <p class="eyebrow">Personal finance cockpit</p>
+          <h1>Cashpilot</h1>
+          <p class="brand-copy">Master your money today, build your freedom tomorrow.</p>
         </div>
-        <div class="banner-pill">
-          <p class="muted">Това е демонстрационен интерфейс. Данните се съхраняват локално в браузъра ви.</p>
-        </div>
-      </div>
-    </section>
 
-    <section id="overview" class="section">
-      <div class="container">
-        <h2>Overview</h2>
-        <div class="grid-3">
-          <div class="card">
-            <p class="muted">Current Balance</p>
-            <h3 id="balValue">1000000</h3>
-          </div>
-          <div class="card">
-            <p class="muted">Income (This Month)</p>
-            <h3 id="incValue">0</h3>
-          </div>
-          <div class="card">
-            <p class="muted">Expenses (This Month)</p>
-            <h3 id="expValue">0</h3>
-          </div>
+        <div class="header-actions">
+          <nav id="nav" class="nav" aria-label="Primary">
+            <button class="nav-btn" data-target="#overview" type="button">Overview</button>
+            <button class="nav-btn" data-target="#transactions" type="button">Transactions</button>
+            <button class="nav-btn" data-target="#budgets" type="button">Budgets</button>
+            <button class="nav-btn" data-target="#goals" type="button">Goals</button>
+            <button class="nav-btn" data-target="#alerts" type="button">Alerts</button>
+            <button class="nav-btn" data-target="#help" type="button">Help</button>
+          </nav>
+
+          <button id="logout" class="btn btn-ghost" type="button">Logout</button>
         </div>
       </div>
-    </section>
+    </header>
 
-    <section id="transactions" class="section">
-      <div class="container">
-        <div class="row">
-          <h2>Transactions</h2>
-          <button id="toggleFormBtn" class="btn" type="button">Добави транзакция</button>
+    <main id="top">
+      <section class="hero section">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Financial clarity</p>
+            <h2>Track your money. Control your future.</h2>
+            <p class="hero-text">Обзор, транзакции, бюджети и цели на едно място. Cashpilot комбинира бърз преглед, фокусирани предупреждения и ясни финансови приоритети.</p>
+
+            <div class="hero-actions">
+              <button class="btn btn-primary nav-btn" data-target="#transactions" type="button">Add a transaction</button>
+              <button class="btn btn-secondary nav-btn" data-target="#goals" type="button">View goals</button>
+            </div>
+          </div>
+
+          <aside class="hero-panel">
+            <p class="panel-label">Demo workspace</p>
+            <h3>Everything important on one screen</h3>
+            <p class="muted">Данните се съхраняват локално в браузъра и интерфейсът е оптимизиран за бърз преглед както на десктоп, така и на мобилни устройства.</p>
+
+            <div class="hero-highlights">
+              <div class="highlight-chip">
+                <span class="highlight-value">24/7</span>
+                <span class="highlight-label">Local access</span>
+              </div>
+              <div class="highlight-chip">
+                <span class="highlight-value">3</span>
+                <span class="highlight-label">Core focus areas</span>
+              </div>
+            </div>
+          </aside>
         </div>
+      </section>
 
-        <div class="controls">
-          <select id="typeFilter">
-            <option value="all">All types</option>
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
-          </select>
+      <section id="overview" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Overview</p>
+              <h2>Financial snapshot</h2>
+            </div>
+            <p class="section-copy">Live values update as transactions change, giving you a single view of balance, income, and outgoing costs.</p>
+          </div>
 
-          <select id="catFilter">
-            <option value="all">All categories</option>
-          </select>
-
-          <select id="sortBy">
-            <option value="date_desc">Date (newest)</option>
-            <option value="date_asc">Date (oldest)</option>
-            <option value="amt_desc">Amount (high)</option>
-            <option value="amt_asc">Amount (low)</option>
-          </select>
+          <div class="stats-grid">
+            <article class="stat-card stat-balance">
+              <p class="muted">Current balance</p>
+              <h3 id="balValue">0.00 EUR</h3>
+            </article>
+            <article class="stat-card stat-income">
+              <p class="muted">Income this month</p>
+              <h3 id="incValue">0.00 EUR</h3>
+            </article>
+            <article class="stat-card stat-expense">
+              <p class="muted">Expenses this month</p>
+              <h3 id="expValue">0.00 EUR</h3>
+            </article>
+          </div>
         </div>
+      </section>
 
-        <form id="txForm" class="form hidden" novalidate>
-          <div class="form-grid">
-            <label>
-              Дата
-              <input id="txDate" type="date" required />
-            </label>
-            <label>
-              Описание
-              <input id="txDesc" type="text" maxlength="40" required />
-            </label>
-            <label>
-              Категория
-              <input id="txCat" type="text" maxlength="20" required />
-            </label>
-            <label>
-              Тип
-              <select id="txType" required>
+      <section id="transactions" class="section">
+        <div class="container">
+          <div class="section-heading section-heading-inline">
+            <div>
+              <p class="eyebrow">Transactions</p>
+              <h2>Cash movement log</h2>
+            </div>
+            <button id="toggleFormBtn" class="btn btn-primary" type="button">Добави транзакция</button>
+          </div>
+
+          <div class="panel surface-panel">
+            <div class="controls" aria-label="Transaction filters">
+              <select id="typeFilter">
+                <option value="all">All types</option>
                 <option value="income">Income</option>
                 <option value="expense">Expense</option>
               </select>
-            </label>
-            <label>
-              Сума
-              <input id="txAmt" type="number" step="0.01" min="0.01" required />
-            </label>
+
+              <select id="catFilter">
+                <option value="all">All categories</option>
+              </select>
+
+              <select id="sortBy">
+                <option value="date_desc">Date (newest)</option>
+                <option value="date_asc">Date (oldest)</option>
+                <option value="amt_desc">Amount (high)</option>
+                <option value="amt_asc">Amount (low)</option>
+              </select>
+            </div>
+
+            <form id="txForm" class="form hidden" novalidate>
+              <div class="form-grid">
+                <label>
+                  Дата
+                  <input id="txDate" type="date" required />
+                </label>
+                <label>
+                  Описание
+                  <input id="txDesc" type="text" maxlength="40" required />
+                </label>
+                <label>
+                  Категория
+                  <input id="txCat" type="text" maxlength="20" required />
+                </label>
+                <label>
+                  Тип
+                  <select id="txType" required>
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                  </select>
+                </label>
+                <label>
+                  Сума
+                  <input id="txAmt" type="number" step="0.01" min="0.01" required />
+                </label>
+              </div>
+
+              <p id="formErr" class="err hidden"></p>
+
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Запази</button>
+                <button id="cancelTx" type="button" class="btn btn-secondary">Отказ</button>
+              </div>
+            </form>
+
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th class="right">Amount</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                <tbody id="txBody"></tbody>
+              </table>
+            </div>
           </div>
-          <p id="formErr" class="err hidden"></p>
-          <div style="margin-top:10px; display:flex; gap:10px;">
-            <button class="btn" type="submit">Запази</button>
-            <button id="cancelTx" type="button" class="btn">Отказ</button>
+        </div>
+      </section>
+
+      <section id="budgets" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Budgets</p>
+              <h2>Category spending control</h2>
+            </div>
+            <p class="section-copy">Each category shows live consumption against your threshold, with warning and overrun states styled for fast scanning.</p>
           </div>
-        </form>
 
-        <div class="table-wrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th class="right">Amount</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody id="txBody"></tbody>
-          </table>
+          <div class="stack" id="budgetsWrap"></div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="budgets" class="section">
-      <div class="container">
-        <h2>Budgets</h2>
+      <section id="goals" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Goals</p>
+              <h2>Savings milestones</h2>
+            </div>
+            <p class="section-copy">Track progress toward focused savings targets and accelerate them with quick-add actions.</p>
+          </div>
 
-        <div class="stack" id="budgetsWrap">
+          <div class="goals-list" id="goalsWrap"></div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="goals" class="section">
-      <div class="container">
-        <h2>Goals</h2>
-        <div class="goals-list" id="goalsWrap"></div>
-        <div style="margin-top:12px;">
+      <section id="alerts" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Alerts</p>
+              <h2>Attention feed</h2>
+            </div>
+            <p class="section-copy">Warnings, healthy budget states, and savings signals stay visible without forcing you to inspect every section manually.</p>
+          </div>
+
+          <div id="alertsWrap" class="stack alerts-feed"></div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="alerts" class="section">
-      <div class="container">
-        <h2>Alerts</h2>
-        <div id="alertsWrap" class="stack"></div>
-      </div>
-    </section>
+      <section id="help" class="section">
+        <div class="container">
+          <div class="panel help-panel">
+            <p class="eyebrow">Help</p>
+            <h2>How to use Cashpilot</h2>
+            <p>Използвайте интерфейса, за да добавяте транзакции, да задавате бюджети и да проследявате финансовите си цели. Всички данни се пазят в <code>localStorage</code> на браузъра.</p>
+          </div>
+        </div>
+      </section>
+    </main>
 
-    <section id="help" class="section">
-      <div class="container">
-        <h2>Help</h2>
-        <p>Използвайте интерфейса, за да добавяте транзакции, да задавате бюджети и да спестявате за вашите цели. Данните се съхраняват в localStorage.</p>
+    <footer class="site-footer">
+      <div class="container footer-row">
+        <p>© 2026 Cashpilot</p>
+        <nav class="footer-links" aria-label="Footer">
+          <button class="nav-btn small" data-target="#help" type="button">Contact</button>
+          <button class="nav-btn small" data-target="#help" type="button">Privacy</button>
+          <button class="nav-btn small" data-target="#help" type="button">Terms</button>
+        </nav>
       </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container footer-row">
-      <p>© 2026 Cashpilot</p>
-      <nav class="footer-links" aria-label="Footer">
-        <div class="nav-item"><button class="nav-btn small" data-target="#help">Contact</button></div>
-        <div class="nav-item"><button class="nav-btn small" data-target="#help">Privacy</button></div>
-        <div class="nav-item"><button class="nav-btn small" data-target="#help">Terms</button></div>
-      </nav>
-    </div>
-  </footer>
+    </footer>
+  </div>
 
   <script src="script.js"></script>
 </body>
