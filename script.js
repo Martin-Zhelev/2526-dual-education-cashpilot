@@ -408,3 +408,25 @@ if (globalAddSavings) {
     saveState();
   });
 }
+const loginScreen = document.getElementById('login-screen');
+const loginBtn = document.getElementById('login-btn');
+const logoutBtn = document.getElementById('logout');
+
+if (!localStorage.getItem('loggedIn')) {
+  loginScreen.style.display = 'flex';
+} else {
+  loginScreen.style.display = 'none';
+}
+
+loginBtn.addEventListener('click', () => {
+  const username = document.getElementById('username').value;
+  if (username.trim() !== '') {
+    localStorage.setItem('loggedIn', 'true');
+    loginScreen.style.display = 'none';
+  }
+});
+
+logoutBtn.addEventListener('click', () => {
+  localStorage.removeItem('loggedIn');
+  location.reload();
+});
