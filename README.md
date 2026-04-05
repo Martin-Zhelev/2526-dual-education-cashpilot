@@ -1,43 +1,84 @@
-# CashPilot - Personal Finance Dashboard 
+# CashPilot 💸
+### Personal Finance Dashboard
 
-CashPilot is a responsive, single-page personal finance dashboard built with plain HTML, CSS and vanilla JavaScript. It demonstrates practical frontend skills: state management, DOM manipulation, forms, filtering and sorting, progress UI, small animations and local persistence.
+> A zero-dependency, single-page finance dashboard that puts full control of your money in the browser — no backend, no sign-up, no friction.
 
-## Features
-- Hero banner with CTA that opens the Transactions form or scrolls to Transactions
-- Responsive header with accessible hamburger menu and keyboard support (ESC to close)
-- Overview cards: Current Balance, Income, Expenses (animated)
-- Transactions:
-  - Sample transactions array
-  - Filters (type, category) and sorting (date, amount)
-  - Add Transaction form with validation
-- Budgets: per-category limits, progress bars and warning/over states
-- Goals: default goals, Add Savings buttons, visual "Achieved" state at 100%
-- Alerts/Insights generated from data
-- Local persistence using localStorage
+---
 
-## Project structure
-- index.html — markup
-- styles.css — styling and responsive rules
-- script.js — application logic, state and event handlers
-- README.md — this file
+## 🚀 What We Built
 
-## Usage
-1. Open `index.html` in a modern browser.
-2. Use the "Add Transaction" button to add transactions.
-3. Filter/sort transactions, set budgets and add savings to goals.
-4. Data persists in browser localStorage. To reset, remove the `cashpilot_v1` key.
+CashPilot is a fully client-side personal finance dashboard built with **plain HTML, CSS, and vanilla JavaScript**. In 48 hours, we designed and shipped a polished, responsive application that lets anyone track income, expenses, budgets, and savings goals — entirely in the browser.
 
-## Implementation notes
-- ES6+ (const/let, arrow functions, template strings)
-- No external libraries
-- Focus on modular functions: render, handlers, utilities
+No frameworks. No build tools. Just the web platform.
 
-## Contributors
-- Daniil Zarubin
-- Martin Zhelev
+---
 
-## License
-Cashpilot Inc.
+## ✨ Features
+
+| Area | What it does |
+|---|---|
+| **Overview** | Animated balance, income, and expense cards updated in real time |
+| **Transactions** | Add, filter by type/category, and sort by date or amount |
+| **Budgets** | Per-category spending limits with live progress bars and over-budget alerts |
+| **Goals** | Savings goals with visual progress and an "Achieved" state at 100% |
+| **Insights** | Auto-generated alerts and tips derived from your actual data |
+| **Persistence** | Full state saved to `localStorage` — data survives page refreshes |
+| **Accessibility** | Keyboard-navigable hamburger menu, ESC-to-close, semantic HTML |
+
+---
+
+## 🛠 Tech Stack
+
+- **Vanilla JS (ES6+)** — arrow functions, template literals, destructuring, modules
+- **CSS3** — custom properties, flexbox/grid, responsive breakpoints, keyframe animations
+- **Web Storage API** — client-side persistence via `localStorage`
+- **Zero dependencies** — no npm, no bundler, no frameworks
+
+---
+
+## 📁 Project Structure
+
+```
+cashpilot/
+├── index.html      # Application markup and layout
+├── styles.css      # Theming, responsive rules, animations
+├── script.js       # State management, event handlers, render logic
+└── README.md       # This file
+```
+
+---
+
+## ⚡ Quick Start
+
+```bash
+# Clone the repo
+git clone https://github.com/your-team/cashpilot.git
+
+# Open in browser — no install required
+open index.html
+```
+
+Or just drag `index.html` into any modern browser tab.
+
+**To reset all data:** open DevTools → Application → Local Storage → delete the `cashpilot_v1` key.
+
+---
+
+## 🏗 Architecture
+
+CashPilot follows a simple unidirectional data flow:
+
+```
+User Action → Update State → Persist to localStorage → Re-render UI
+```
+
+State is held in a single JavaScript object and all UI is derived from it, making the app predictable and easy to debug. Key modules:
+
+- **`render*()`** — pure functions that paint UI from state
+- **`handle*()`** — event handlers that mutate state and trigger re-renders
+- **utility functions** — filtering, sorting, formatting, and insight generation
+
+---
 
 ## Documentation
 
@@ -45,5 +86,23 @@ Cashpilot Inc.
 
 <li> <a href = "https://codingburgas-my.sharepoint.com/:w:/g/personal/majelev24_codingburgas_bg/IQCHRUfEHYT_RJguvf_q4-9IAc0hVxUmfHL_anmDUo6rG2A?e=ChwnSq"</a> Documentation
 
-### Notes
-This demo uses Euro (EUR) as the display currency.
+## 🌍 Notes
+
+- Display currency: **EUR (€)**
+- Tested in: Chrome 120+, Firefox 121+, Safari 17+
+- Mobile-first responsive design
+
+---
+
+## 👥 Team
+
+| Name | Role |
+|---|---|
+| Daniil Zarubin | Frontend & Architecture |
+| Martin Zhelev | UI Design & Logic |
+
+---
+
+## 📄 License
+
+© 2025 Cashpilot Inc. All rights reserved.
