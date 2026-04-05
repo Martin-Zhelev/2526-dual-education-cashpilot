@@ -1,4 +1,4 @@
-# CashPilot — Personal Finance Dashboard 
+# CashPilot - Personal Finance Dashboard 
 
 CashPilot is a responsive, single-page personal finance dashboard built with plain HTML, CSS and vanilla JavaScript. It demonstrates practical frontend skills: state management, DOM manipulation, forms, filtering and sorting, progress UI, small animations and local persistence.
 
@@ -13,7 +13,7 @@ CashPilot is a responsive, single-page personal finance dashboard built with pla
 - Budgets: per-category limits, progress bars and warning/over states
 - Goals: default goals, Add Savings buttons, visual "Achieved" state at 100%
 - Alerts/Insights generated from data
-- Local persistence using localStorage (key: `cashpilot_v1`)
+- Local persistence using localStorage
 
 ## Project structure
 - index.html — markup
@@ -39,7 +39,11 @@ CashPilot is a responsive, single-page personal finance dashboard built with pla
 ## License
 Cashpilot Inc.
 
+## Documentation
 
+<li> <a href = "https://codingburgas-my.sharepoint.com/:w:/g/personal/majelev24_codingburgas_bg/IQCHRUfEHYT_RJguvf_q4-9IAc0hVxUmfHL_anmDUo6rG2A?e=ChwnSq"</a> Presentation
+
+<li> <a href = "https://codingburgas-my.sharepoint.com/:w:/g/personal/majelev24_codingburgas_bg/IQCHRUfEHYT_RJguvf_q4-9IAc0hVxUmfHL_anmDUo6rG2A?e=ChwnSq"</a> Documentation
 
 ### Notes
 This demo uses Euro (EUR) as the display currency.
