@@ -419,11 +419,21 @@ if (!localStorage.getItem('loggedIn')) {
 }
 
 loginBtn.addEventListener('click', () => {
-  const username = document.getElementById('username').value;
-  if (username.trim() !== '') {
-    localStorage.setItem('loggedIn', 'true');
-    loginScreen.style.display = 'none';
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const email = document.getElementById('email').value.trim();
+
+  if (!username || !password || !email) {
+    alert('All fields are required.');
+    return;
   }
+  if (!email.includes('@')) {
+    alert('Email must contain @');
+    return;
+  }
+
+  localStorage.setItem('loggedIn', 'true');
+  loginScreen.style.display = 'none';
 });
 
 logoutBtn.addEventListener('click', () => {
